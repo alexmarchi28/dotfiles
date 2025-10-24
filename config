@@ -19,8 +19,8 @@ exec mako
 exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
 
 # Disables borders
-default_border pixel 1
-client.focused #ff0000 #009999 #0000ff #009999
+default_border pixel 2
+client.focused #009999 #009999 #ddffff #009999
 gaps inner 10
 gaps outer 10
 
