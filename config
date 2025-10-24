@@ -41,7 +41,7 @@ output * bg /home/alex/.config/sway/tokyo_night.jpg fill
 # output HDMI-A-1 position 0 0 scale 0.711
 
 output eDP-1 position 0 0
-output HDMI-A-1 position 1920 0
+output HDMI-A-1 mode 1920x1080@120Hz position 1920 0
 
 # scale 0,711 to scale a 1366x768 into 1920x1080
 
