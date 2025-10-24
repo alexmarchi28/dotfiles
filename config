@@ -19,9 +19,11 @@ exec mako
 exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
 
 # Disables borders
-default_border pixel 0
+default_border pixel 1
+client.focused #ff0000 #009999 #0000ff #009999
 gaps inner 10
 gaps outer 10
+
 
 # Wallpaper
 output * bg /home/alex/.config/sway/tokyo_night.jpg fill
