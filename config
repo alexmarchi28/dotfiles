@@ -10,7 +10,7 @@ set $right l
 # Default Terminal
 set $term kitty
 # Default Application Launcher
-set $menu wmenu-run -S ffffff -N 000000 -s 000000 -n ffffff
+set $menu wmenu-run -S cdd6f4 -N 1a1b26 -s 1a1b26 -n cdd6f4
 
 # Starts Notification Daemon
 exec mako
