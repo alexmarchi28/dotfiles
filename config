@@ -59,7 +59,7 @@ bindsym $mod+Shift+p exec "systemctl suspend"
 input type:keyboard {
     xkb_layout "it(us)"
     # Additional Control key instead of CapsLock
-    xkb_options ctrl:nocaps
+    # xkb_options ctrl:nocaps
 }
 
 input type:touchpad {
