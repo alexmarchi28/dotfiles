@@ -28,31 +28,10 @@ gaps outer 10
 # Wallpaper
 output * bg /home/alex/.config/sway/omarchy-tokyo-night-default.png fill
 
-# Double monitor disposition
-#   ______________
-#   |             |
-#   |             |
-#   |  HDMI-A-1   |
-#   |             |
-#   ---------------
-#      _________
-#      |       |
-#      | eDP-1 |
-#      --------
-# output eDP-1 position 0 1100
-# output HDMI-A-1 position 0 0 scale 0.711
+output HDMI-A-1 mode 1920x1080@120Hz adaptive_sync on
 
-output eDP-1 position 0 0
-output HDMI-A-1 mode 1920x1080@120Hz position 1920 0
-
-# scale 0,711 to scale a 1366x768 into 1920x1080
-
-
-# Spegne lo schermo del portatile
-bindsym $mod+Shift+m output "eDP-1" toggle
-# Spegne lo schermo esterno
-bindsym $mod+Control+m output "HDMI-A-1" toggle
-# Manda in sospenzione
+bindsym $mod+Shift+m output "eDP-1" power toggle
+bindsym $mod+Control+m output "HDMI-A-1" power toggle
 bindsym $mod+Shift+p exec "systemctl suspend"
 
 # Layout tastiera
@@ -189,9 +168,14 @@ bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle &
 # using laptop dedicated keys
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
-# using arrow keys
-bindsym --locked $mod+Shift+Up exec brightnessctl set 5%+ | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
-bindsym --locked $mod+Shift+Down exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
+
+# change brightness external monitor
+bindsym --locked $mod+Shift+Up exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 12 $new; notify-send "Contrast" "$new%"'
+bindsym --locked $mod+Shift+Down exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 12 $new; notify-send "Contrast" "$new%"'
+
+
+bindsym --locked $mod+Control+Up exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 10 $new; notify-send "Brightness" "$new%"'
+bindsym --locked $mod+Control+Down exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 10 $new; notify-send "Brightness" "$new%"'
 
 # Take Screenshots, goes directly into Images folder
 bindsym Print exec grim
