@@ -169,13 +169,13 @@ bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle &
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
 
+# change contrast external monitor
+bindsym --locked $mod+Control+Up exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
+bindsym --locked $mod+Control+Down exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
+
 # change brightness external monitor
-bindsym --locked $mod+Shift+Up exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
-bindsym --locked $mod+Shift+Down exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
-
-
-bindsym --locked $mod+Control+Up exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
-bindsym --locked $mod+Control+Down exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
+bindsym --locked $mod+Shift+Up exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
+bindsym --locked $mod+Shift+Down exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
 
 # Take Screenshots, goes directly into Images folder
 bindsym Print exec grim
