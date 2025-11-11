@@ -14,6 +14,8 @@ set $menu wmenu-run -S cdd6f4 -N 1a1b26 -s 1a1b26 -n cdd6f4
 
 # Starts Notification Daemon
 exec mako
+# Starts brightness and volume indicator
+exec wob
 
 # to use GUI applications with sudo privileges
 exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
@@ -170,12 +172,12 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ | sed -En 's/.*\
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
 
 # change contrast external monitor
-bindsym --locked $mod+Control+Up exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
-bindsym --locked $mod+Control+Down exec sh -c 'current=$(ddcutil getvcp 12 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 12 $new; echo $new > $WOBSOCK'
+bindsym --locked $mod+Control+u exec monictrl 12 +10 && monictrl 12 > $WOBSOCK 
+bindsym --locked $mod+Control+d exec monictrl 12 -10 && monictrl 12 > $WOBSOCK
 
 # change brightness external monitor
-bindsym --locked $mod+Shift+Up exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current + 10)); [ $new -gt 100 ] && new=100; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
-bindsym --locked $mod+Shift+Down exec sh -c 'current=$(ddcutil getvcp 10 | awk -F"current value = " "{print \$2}" | awk -F "," "{print \$1}"); new=$((current - 10)); [ $new -lt 0 ] && new=0; ddcutil setvcp 10 $new; echo $new > $WOBSOCK'
+bindsym --locked $mod+Shift+u exec monictrl 10 +10 && monictrl 10 > $WOBSOCK
+bindsym --locked $mod+Shift+d exec monictrl 10 -10 && monictrl 10 > $WOBSOCK
 
 # Take Screenshots, goes directly into Images folder
 bindsym Print exec grim
