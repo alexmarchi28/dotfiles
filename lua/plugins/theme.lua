@@ -1,18 +1,12 @@
 return {
-  {
-    "shaunsingh/nord.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.o.background = "light"
-      vim.cmd.colorscheme("nord")
-    end,
-  },
+  -- add gruvbox
+  { "ellisonleao/gruvbox.nvim" },
 
+  -- Configure LazyVim to load gruvbox
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "nord",
+      colorscheme = "gruvbox",
     },
   },
 }
