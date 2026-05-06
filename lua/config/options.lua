@@ -4,3 +4,8 @@
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.spell = false
+vim.opt.cursorline = false
+vim.opt.laststatus = 0
+vim.opt.showmode = true
+vim.opt.ruler = true
+vim.opt.statusline = ""
