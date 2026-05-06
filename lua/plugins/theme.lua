@@ -43,6 +43,20 @@ local function clear_background()
   end
 end
 
+local function dim_indent_guides()
+  local colors
+
+  if vim.o.background == "light" then
+    colors = { indent = "#d9d9d9", scope = "#b8b8b8" }
+  else
+    colors = { indent = "#242424", scope = "#363636" }
+  end
+
+  vim.api.nvim_set_hl(0, "SnacksIndent", { fg = colors.indent, ctermfg = 238 })
+  vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = colors.scope, ctermfg = 240 })
+  vim.api.nvim_set_hl(0, "SnacksIndentChunk", { fg = colors.scope, ctermfg = 240 })
+end
+
 return {
   {
     "LazyVim/LazyVim",
@@ -51,7 +65,10 @@ return {
 
       vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
         group = group,
-        callback = clear_background,
+        callback = function()
+          clear_background()
+          dim_indent_guides()
+        end,
       })
     end,
     opts = {
