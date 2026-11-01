@@ -1,0 +1,50 @@
+# Pacchetti Debian per questa configurazione (letti da setup.sh)
+
+# sway e componenti Wayland
+sway
+swaybg
+xwayland
+xdg-desktop-portal-wlr
+xdg-desktop-portal-gtk
+lxpolkit
+
+# barra, launcher, notifiche, OSD
+waybar
+fuzzel
+wmenu
+mako-notifier
+libnotify-bin
+wob
+
+# terminale
+kitty
+
+# screenshot e appunti
+grim
+slurp
+wl-clipboard
+
+# audio, musica, bluetooth, rete
+wireplumber
+pipewire-pulse
+pavucontrol
+pamixer
+playerctl
+blueman
+bluez
+network-manager
+
+# luminosità del monitor via DDC/CI (monictrl)
+ddcutil
+
+# wallpaper .webp
+webp-pixbuf-loader
+
+# tema Adwaita-sage (gtk-sage-theme): gresource e Pillow
+libglib2.0-bin
+python3-pil
+
+# gestione dei dotfiles e download del font
+stow
+curl
+unzip
