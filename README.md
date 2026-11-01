@@ -13,6 +13,10 @@ Everforest theme.
 | ![Floating panels, notifications and wob](screenshots/panels.jpg) | ![Terminal palette](screenshots/terminal.jpg) |
 | Floating pavucontrol, mako notification and wob bar | kitty palette |
 
+![Firefox with the Misty Forest theme](screenshots/firefox.jpg)
+
+Firefox with the Misty Forest theme
+
 ## Components
 
 | | |
