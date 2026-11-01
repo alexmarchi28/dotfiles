@@ -3,15 +3,38 @@
   "position": "top",
   "spacing": 0,
   "height": 26,
-  "modules-left": ["sway/workspaces"],
+  "modules-left": ["sway/workspaces", "mpris"],
   "modules-center": ["clock"], 
   "modules-right": [
     "group/tray-expander",
     "bluetooth",
     "network",
-    "pulseaudio",
-    "battery"
+    "custom/brightness",
+    "pulseaudio"
   ],
+  "mpris": {
+    "format": "{player_icon} {dynamic}",
+    "format-paused": "{status_icon} {dynamic}",
+    "dynamic-order": ["title", "artist"],
+    "dynamic-len": 40,
+    "player-icons": {
+      "default": "󰎆",
+      "firefox": "󰈹",
+      "spotify": "󰓇"
+    },
+    "status-icons": {
+      "paused": "󰏤"
+    },
+    "tooltip-format": "{player}: {artist} - {title}"
+  },
+  "custom/brightness": {
+    "exec": "~/.config/waybar/brightness.sh",
+    "return-type": "json",
+    "interval": 30,
+    "signal": 8,
+    "on-scroll-up": "~/.local/bin/monictrl 10 +5 > $XDG_RUNTIME_DIR/wob.sock",
+    "on-scroll-down": "~/.local/bin/monictrl 10 -5 > $XDG_RUNTIME_DIR/wob.sock"
+  },
   "sway/workspaces": {
     "on-click": "activate",
     "format": "{icon}",
@@ -43,32 +66,14 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "kitty -e nmtui"
-  },
-  "battery": {
-    "format": "{capacity}% {icon}",
-    "format-discharging": "{icon}",
-    "format-charging": "{icon}",
-    "format-plugged": "",
-    "format-icons": {
-      "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
-      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
-    },
-    "format-full": "󰂅",
-    "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
-    "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
-    "interval": 5,
-    "states": {
-      "warning": 20,
-      "critical": 10
-    }
+    "on-click": "kitty --class nmtui -e nmtui"
   },
   "bluetooth": {
     "format": "",
     "format-disabled": "󰂲",
     "format-connected": "",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "blueberry"
+    "on-click": "blueman-manager"
   },
   "pulseaudio": {
     "format": "{icon}",

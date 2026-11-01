@@ -1,6 +1,7 @@
 * {
-  background-color: #1a1b26;
-  color: #cdd6f4;
+  /* misty forest palette, matches sway/trees.webp */
+  background-color: #1c2225;
+  color: #d3dad5;
 
   border: none;
   border-radius: 0;
@@ -28,9 +29,23 @@
   opacity: 0.5;
 }
 
+#workspaces button.focused {
+  color: #93a99c;
+}
+
+#mpris {
+  margin-left: 16px;
+  color: #93a99c;
+}
+
+#mpris.paused {
+  color: #7f8b85;
+}
+
 #cpu,
 #battery,
 #pulseaudio,
+#custom-brightness,
 #custom-omarchy,
 #custom-screenrecording-indicator,
 #custom-update {
@@ -77,5 +92,5 @@ tooltip {
 }
 
 #custom-screenrecording-indicator.active {
-  color: #a55555;
+  color: #b87a6e;
 }
