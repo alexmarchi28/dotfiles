@@ -29,7 +29,7 @@ Everforest di Omarchy.
 ## Installazione
 
 ```bash
-git clone git@github.com:alexmarchi28/dotfiles.git ~/dotfiles
+git clone https://github.com/alexmarchi28/dotfiles.git ~/dotfiles
 ~/dotfiles/setup.sh
 ```
 
