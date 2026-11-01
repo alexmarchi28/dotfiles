@@ -48,8 +48,6 @@ local function clear_background()
     "TabLineFill",
     "WinBar",
     "WinBarNC",
-    "Pmenu",
-    "PmenuSel",
     "TelescopeNormal",
     "TelescopeBorder",
     "TelescopePromptNormal",
@@ -93,6 +91,21 @@ return {
         hl.SnacksIndent = { fg = p.bg2 }
         hl.SnacksIndentScope = { fg = p.bg4 }
         hl.SnacksIndentChunk = { fg = p.bg4 }
+
+        -- completion menu on a solid background, readable over the code
+        hl.Pmenu = { fg = p.fg, bg = p.bg2 }
+        hl.PmenuSel = { fg = p.bg0, bg = p.statusline1 }
+        hl.PmenuSbar = { bg = p.bg2 }
+        hl.PmenuThumb = { bg = p.bg4 }
+        hl.BlinkCmpMenuBorder = { fg = p.bg2, bg = p.bg2 }
+
+        -- statusline (lua/config/statusline.lua)
+        hl.StatusLine = { fg = p.grey1 }
+        hl.StatusLineNC = { fg = p.grey0 }
+        hl.StatusLineMode = { fg = p.statusline1, bold = true }
+        hl.StatusLineModified = { fg = p.yellow }
+        hl.StatusLineError = { fg = p.red }
+        hl.StatusLineWarn = { fg = p.yellow }
       end,
     },
   },

@@ -5,10 +5,10 @@ vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.spell = false
 vim.opt.cursorline = false
-vim.opt.laststatus = 0
-vim.opt.showmode = true
-vim.opt.ruler = true
-vim.opt.statusline = ""
+-- one minimal statusline for all windows (lua/config/statusline.lua); it shows the mode
+vim.opt.laststatus = 3
+vim.opt.showmode = false
+vim.opt.statusline = "%!v:lua.require'config.statusline'.render()"
 
 -- Python extra: keep basedpyright (the extra defaults to pyright)
 vim.g.lazyvim_python_lsp = "basedpyright"
