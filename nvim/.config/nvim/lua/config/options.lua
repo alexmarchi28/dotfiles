@@ -1,7 +1,8 @@
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
-vim.opt.wrap = true
+-- no wrap in code; text files turn it on (autocmds.lua), breaking lines between words
+vim.opt.wrap = false
 vim.opt.linebreak = true
 vim.opt.spell = false
 vim.opt.cursorline = false

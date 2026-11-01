@@ -7,5 +7,13 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
--- No spellcheck in text files (markdown, gitcommit, ...): wrap is already on everywhere (options.lua).
+-- LazyVim turns on wrap and spellcheck in text files: keep only the wrap (below), no spellcheck.
 vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("user_wrap_text", { clear = true }),
+  pattern = { "text", "plaintex", "tex", "typst", "gitcommit", "markdown", "mail" },
+  callback = function()
+    vim.opt_local.wrap = true
+  end,
+})
