@@ -49,6 +49,9 @@ git
 ripgrep
 fd-find
 build-essential
+# lazygit (<leader>gg) e fzf (ricerche)
+lazygit
+fzf
 # strumenti installati da Mason: black (python3-venv), basedpyright (npm), gopls (go)
 python3-venv
 nodejs

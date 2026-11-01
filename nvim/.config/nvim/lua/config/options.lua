@@ -9,3 +9,6 @@ vim.opt.laststatus = 0
 vim.opt.showmode = true
 vim.opt.ruler = true
 vim.opt.statusline = ""
+
+-- Python extra: keep basedpyright (the extra defaults to pyright)
+vim.g.lazyvim_python_lsp = "basedpyright"
