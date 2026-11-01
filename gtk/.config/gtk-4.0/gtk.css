@@ -1,0 +1,7 @@
+/* Accento salvia per le app libadwaita (misty forest palette, matches sway/trees.webp).
+   GTK3 e GTK4 senza libadwaita usano invece il tema Adwaita-sage (~/.local/bin/gtk-sage-theme). */
+:root {
+  --accent-bg-color: #93a99c;
+  --accent-fg-color: #1c2225;
+  --accent-color: #93a99c;
+}

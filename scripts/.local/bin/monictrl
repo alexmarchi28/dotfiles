@@ -1,0 +1,74 @@
+#!/bin/sh
+# uso: monictrl <vcp> [+N|-N]   (10 = luminosità, 12 = contrasto)
+# Stampa il valore (per wob). Con +N/-N stampa subito il valore finale previsto
+# e poi applica la modifica al monitor: girando la rotella veloce gli scatti si
+# sommano nel valore obiettivo, e ddcutil (lento) lo raggiunge in sottofondo.
+vcp=$1; delta=$2
+run=${XDG_RUNTIME_DIR:-/tmp}
+state="$run/monictrl.$vcp.state"   # "<obiettivo> <attuale sul monitor> <massimo>"
+fresh=60                            # secondi in cui lo stato salvato è affidabile
+                                    # (Waybar lo rilegge ogni 30 s, quindi resta fresco)
+
+ddc() { ddcutil --display 1 "$@"; }
+
+# lo stato si legge e si scrive solo con il suo lock (fd 8)
+get() { ( flock 8; cat "$state" 2>/dev/null ) 8>"$state.lock"; }
+
+is_fresh() {
+  [ -s "$state" ] && [ $(( $(date +%s) - $(stat -c %Y "$state") )) -lt $fresh ]
+}
+
+# un solo ddcutil alla volta sul bus i2c (fd 9)
+exec 9>"$run/monictrl.lock"
+
+# rilegge il valore vero dal monitor (es. cambiato dai tasti del monitor)
+sync() {
+  # una rilettura alla volta (fd 7): chi aspetta usa il risultato di chi l'ha fatta
+  exec 7>"$state.sync"
+  flock -w 5 7 || return 1
+  if is_fresh; then flock -u 7; return 0; fi
+  flock -w 5 9 || { flock -u 7; return 1; }
+  set -- $(ddc -t getvcp "$vcp" | awk '{print $4, $5}')
+  flock -u 9
+  [ -n "$2" ] || { flock -u 7; return 1; }
+  ( flock 8
+    t=; c=
+    [ -s "$state" ] && read t c m < "$state"
+    # se non c'è una modifica in sospeso, l'obiettivo è il valore vero
+    if [ -z "$t" ] || [ "$t" = "$c" ]; then t=$1; fi
+    echo "$t $1 $2" > "$state"
+  ) 8>"$state.lock"
+  flock -u 7
+}
+
+# porta il monitor al valore obiettivo; se c'è già chi lo fa, non fa nulla
+apply() {
+  while flock -n 9; do
+    while set -- $(get); [ "$1" != "$2" ]; do
+      ddc --noverify setvcp "$vcp" "$1" || { flock -u 9; return 1; }
+      ( flock 8; read t c m < "$state"; echo "$t $1 $m" > "$state" ) 8>"$state.lock"
+    done
+    flock -u 9
+    # uno scatto arrivato mentre rilasciavamo il lock? allora ricomincia
+    set -- $(get); [ "$1" = "$2" ] && break
+  done
+}
+
+is_fresh || sync
+[ -s "$state" ] || exit 1
+
+if [ -n "$delta" ]; then
+  ( flock 8
+    read t c m < "$state"
+    t=$((t + delta)); [ "$t" -lt 0 ] && t=0; [ "$t" -gt "$m" ] && t=$m
+    echo "$t $c $m" > "$state"
+    echo "$t"
+  ) 8>"$state.lock"
+  # aggiorna subito il modulo luminosità di Waybar (custom/brightness, "signal": 8)
+  [ "$vcp" = 10 ] && pkill -RTMIN+8 -x waybar
+  apply
+else
+  set -- $(get)
+  echo "$1"
+  apply
+fi

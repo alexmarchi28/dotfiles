@@ -1,0 +1,142 @@
+#!/usr/bin/python3 -I
+"""Genera il tema GTK "Adwaita-sage": l'Adwaita scuro incluso in GTK3 e GTK4,
+con ogni tonalità di blu dell'accento trasformata in salvia (stessa luminosità).
+Genera anche il tema di icone "Adwaita-sage": le cartelle di Adwaita ricolorate,
+tutto il resto ereditato da Adwaita.
+
+Le app libadwaita ignorano i temi: per loro l'accento è in ~/.config/gtk-4.0/gtk.css.
+
+uso: gtk-sage-theme               rigenera il tema
+     gtk-sage-theme --if-changed  rigenera solo se GTK è stato aggiornato (avvio di sway)
+"""
+import colorsys
+import os
+import re
+import subprocess
+import sys
+
+LIBDIR = "/usr/lib/x86_64-linux-gnu"
+SOURCES = {
+    # cartella del tema: (libreria, foglio di stile scuro, cartella delle risorse)
+    "gtk-3.0": ("libgtk-3.so.0", "/org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css",
+                "/org/gtk/libgtk/theme/Adwaita/"),
+    "gtk-4.0": ("libgtk-4.so.1", "/org/gtk/libgtk/theme/Default/Default-dark.css",
+                "/org/gtk/libgtk/theme/Default/"),
+}
+THEME = os.path.expanduser("~/.local/share/themes/Adwaita-sage")
+STAMP = os.path.join(THEME, ".gtk-versions")
+ICONS_SRC = "/usr/share/icons/Adwaita"
+ICONS = os.path.expanduser("~/.local/share/icons/Adwaita-sage")
+ICON_DIRS = {
+    # cartella: voce di index.theme (copiata da Adwaita)
+    "scalable/places": "Context=Places\nSize=128\nMinSize=8\nMaxSize=512\nType=Scalable",
+    "16x16/places": "Context=Places\nSize=16\nType=Fixed",
+}
+
+# salvia della palette (#93a99c); la saturazione è un po' più alta perché le selezioni restino visibili
+SAGE_H = colorsys.rgb_to_hls(0x93 / 255, 0xA9 / 255, 0x9C / 255)[0]
+SAGE_S = 0.16
+
+
+def sage(r, g, b):
+    """r,g,b in 0..1 -> versione salvia se è un blu dell'accento, altrimenti None."""
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    if 0.52 < h < 0.68 and s > 0.25:
+        return colorsys.hls_to_rgb(SAGE_H, l, min(s, SAGE_S))
+    return None
+
+
+def hex_sub(m):
+    h = m.group(1)
+    rgb = sage(*(int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)))
+    if rgb is None:
+        return m.group(0)
+    return "#" + "".join(f"{round(c * 255):02x}" for c in rgb)
+
+
+def rgb_sub(m):
+    fn, r, g, b, rest = m.groups()
+    rgb = sage(int(r) / 255, int(g) / 255, int(b) / 255)
+    if rgb is None:
+        return m.group(0)
+    r, g, b = (round(c * 255) for c in rgb)
+    return f"{fn}({r}, {g}, {b}{rest or ''})"
+
+
+def build(lib, css_path, assets):
+    css = subprocess.run(["gresource", "extract", os.path.join(LIBDIR, lib), css_path],
+                         check=True, capture_output=True, text=True).stdout
+    css = re.sub(r"#([0-9a-fA-F]{6})\b", hex_sub, css)
+    css = re.sub(r"\b(rgba?)\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,[^)]*)?\)", rgb_sub, css)
+    # le immagini (spunte, pallini, tacche degli slider) restano quelle incorporate in GTK
+    css = re.sub(r'url\("assets/', f'url("resource://{assets}assets/', css)
+    return css
+
+
+def build_icons():
+    """Copia le icone delle cartelle di Adwaita ricolorate; il resto lo eredita da Adwaita."""
+    for folder in ICON_DIRS:
+        src, dst = os.path.join(ICONS_SRC, folder), os.path.join(ICONS, folder)
+        os.makedirs(dst, exist_ok=True)
+        for name in sorted(os.listdir(src)):
+            if name.endswith(".svg"):
+                svg = open(os.path.join(src, name), encoding="utf-8").read()
+                svg = re.sub(r"#([0-9a-fA-F]{6})\b", hex_sub, svg)
+                open(os.path.join(dst, name), "w", encoding="utf-8").write(svg)
+            elif name.endswith(".png"):
+                recolor_png(os.path.join(src, name), os.path.join(dst, name))
+    sections = "".join(f"\n[{folder}]\n{entry}\n" for folder, entry in ICON_DIRS.items())
+    with open(os.path.join(ICONS, "index.theme"), "w") as f:
+        f.write("[Icon Theme]\nName=Adwaita-sage\nComment=Adwaita con cartelle salvia\n"
+                "Inherits=Adwaita,AdwaitaLegacy,hicolor\nExample=folder\n"
+                f"Directories={','.join(ICON_DIRS)}\n{sections}")
+
+
+def recolor_png(src, dst):
+    from PIL import Image
+    im = Image.open(src).convert("RGBA")
+    px = im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            rgb = sage(r / 255, g / 255, b / 255) if a else None
+            if rgb:
+                px[x, y] = (*(round(c * 255) for c in rgb), a)
+    im.save(dst)
+
+
+def versions():
+    libs = [os.path.realpath(os.path.join(LIBDIR, lib)) for lib, _, _ in SOURCES.values()]
+    # il pacchetto delle icone non ha la versione nel nome dei file: usa la data di modifica
+    icons = f"{ICONS_SRC}/index.theme {int(os.path.getmtime(os.path.join(ICONS_SRC, 'index.theme')))}"
+    return "\n".join(libs + [icons]) + "\n"
+
+
+def main():
+    current = versions()
+    if "--if-changed" in sys.argv[1:]:
+        try:
+            if open(STAMP).read() == current:
+                return
+        except OSError:
+            pass
+    header = "/* Generato da ~/.local/bin/gtk-sage-theme: non modificare, rilancia lo script */\n"
+    for folder, (lib, css_path, assets) in SOURCES.items():
+        css = header + build(lib, css_path, assets)
+        os.makedirs(os.path.join(THEME, folder), exist_ok=True)
+        # tema solo scuro: gtk.css e gtk-dark.css sono uguali
+        for name in ("gtk.css", "gtk-dark.css"):
+            with open(os.path.join(THEME, folder, name), "w", encoding="utf-8") as f:
+                f.write(css)
+    with open(os.path.join(THEME, "index.theme"), "w") as f:
+        f.write("[Desktop Entry]\nType=X-GNOME-Metatheme\nName=Adwaita-sage\n"
+                "Comment=Adwaita scuro con accento salvia\n\n"
+                "[X-GNOME-Metatheme]\nGtkTheme=Adwaita-sage\n")
+    build_icons()
+    with open(STAMP, "w") as f:
+        f.write(current)
+    print(f"tema rigenerato in {THEME}\nicone rigenerate in {ICONS}")
+
+
+if __name__ == "__main__":
+    main()

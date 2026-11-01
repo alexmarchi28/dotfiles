@@ -1,0 +1,10 @@
+# misty forest palette, matches sway/trees.webp
+font=JetBrainsMono Nerd Font 10
+background-color=#1c2225
+text-color=#d3dad5
+border-color=#93a99c
+border-size=2
+progress-color=over #2e383c
+
+[urgency=high]
+border-color=#b87a6e
