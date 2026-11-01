@@ -132,7 +132,9 @@ To add a package: create `name/.config/name/...`, move the file there and run
 - **Text boot** (optional, not run by `setup.sh`): `sudo ~/dotfiles/system/boot/install.sh`, then
   reboot. GRUB stays hidden; the boot shows the systemd `[  OK  ]` lines in the system palette (the
   16 console colours are set with the `vt.default_*` kernel parameters) with the Terminus 12x24
-  font, then the tuigreet login replaces GDM (sway by default, GNOME still selectable with `F3`).
+  font, then the tuigreet login replaces GDM. At the first login pick **Sway** with `F3` (tuigreet then
+  remembers it): started from its session file, sway gets `XDG_CURRENT_DESKTOP=sway`. GNOME stays
+  selectable the same way.
   The keyring is unlocked at login as with GDM. `sudo ~/dotfiles/system/boot/uninstall.sh` goes back
   to the Debian boot; if the login does not start, use it from `Ctrl+Alt+F2`.
 - **Settings outside of files**: dark style, GTK theme and icon theme are `gsettings` values, applied
