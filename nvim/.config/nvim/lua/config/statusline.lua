@@ -54,10 +54,15 @@ function M.render()
   return table.concat(left, " ") .. "%=" .. table.concat(right, "  ")
 end
 
--- redraw when the mode or the diagnostics change
+-- redraw when the mode or the diagnostics change; scheduled, because a redraw in the middle of a
+-- `:normal` run by a plugin (e.g. the snacks picker preview) ends insert mode and moves the cursor
 vim.api.nvim_create_autocmd({ "ModeChanged", "DiagnosticChanged" }, {
   group = vim.api.nvim_create_augroup("user_statusline", { clear = true }),
-  command = "redrawstatus",
+  callback = function()
+    vim.schedule(function()
+      vim.cmd.redrawstatus()
+    end)
+  end,
 })
 
 return M
