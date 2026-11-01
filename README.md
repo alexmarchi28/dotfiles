@@ -94,7 +94,6 @@ Per aggiungere un pacchetto: crea `nome/.config/nome/...`, sposta lì il file e 
 ## Crediti
 
 - [Omarchy](https://github.com/basecamp/omarchy): ispirazione generale del setup.
-- Il wallpaper `trees.webp` viene dal tema **Everforest** di Omarchy; anche gli altri wallpaper
-  `omarchy-*` vengono da Omarchy.
+- Il wallpaper `trees.webp` viene dal tema **Everforest** di Omarchy.
 - La configurazione di Waybar (`config.jsonc`, `style.css`) è partita da quella di Omarchy ed è stata
   adattata a sway e a questo PC.
