@@ -45,4 +45,31 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-sage'
 gsettings set org.gnome.desktop.interface icon-theme 'Adwaita-sage'
 
+echo "==> Firefox: user.js e tema Misty Forest"
+# profilo predefinito dell'installazione (sezione [Install...] di profiles.ini)
+profile=""
+for dir in "$HOME/.config/mozilla/firefox" "$HOME/.mozilla/firefox"; do
+  ini="$dir/profiles.ini"
+  [ -f "$ini" ] || continue
+  rel=$(awk -F= '/^\[Install/ {s=1; next} /^\[/ {s=0} s && $1=="Default" {print $2; exit}' "$ini")
+  if [ -n "$rel" ] && [ -d "$dir/$rel" ]; then profile="$dir/$rel"; break; fi
+done
+if [ -z "$profile" ]; then
+  echo "nessun profilo Firefox trovato: avvia Firefox una volta e rilancia setup.sh"
+else
+  if [ -e "$profile/user.js" ] && [ ! -L "$profile/user.js" ]; then
+    mkdir -p "$backup"
+    mv "$profile/user.js" "$backup/firefox-user.js"
+    echo "backup: $profile/user.js"
+  fi
+  ln -sfn "$PWD/firefox/user.js" "$profile/user.js"
+  echo "user.js collegato a $profile"
+  if [ -f "$profile/extensions/misty-forest@alexmarchi28.github.xpi" ]; then
+    echo "tema Misty Forest già installato"
+  else
+    # Firefox chiede conferma dell'installazione del tema (firmato da Mozilla)
+    firefox "$PWD/firefox/misty-forest-1.0.xpi" &
+  fi
+fi
+
 echo "==> Fatto. Esci e scegli Sway nella schermata di login (o ricarica sway con \$mod+Shift+c)."

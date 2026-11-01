@@ -1,0 +1,55 @@
+{
+  "manifest_version": 2,
+  "name": "Misty Forest",
+  "version": "1.0",
+  "description": "Grey-green theme with a sage accent, matching the sway setup in alexmarchi28/dotfiles.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "misty-forest@alexmarchi28.github"
+    }
+  },
+  "theme": {
+    "colors": {
+      "frame": "#1c2225",
+      "frame_inactive": "#1c2225",
+      "tab_background_text": "#7f8b85",
+      "tab_selected": "#2e383c",
+      "tab_text": "#d3dad5",
+      "tab_line": "#93a99c",
+      "tab_loading": "#93a99c",
+      "toolbar": "#2e383c",
+      "toolbar_text": "#d3dad5",
+      "toolbar_top_separator": "#2e383c",
+      "toolbar_bottom_separator": "#1c2225",
+      "toolbar_vertical_separator": "#3a464b",
+      "toolbar_field": "#1c2225",
+      "toolbar_field_text": "#d3dad5",
+      "toolbar_field_border": "#3a464b",
+      "toolbar_field_focus": "#1c2225",
+      "toolbar_field_text_focus": "#d3dad5",
+      "toolbar_field_border_focus": "#93a99c",
+      "toolbar_field_highlight": "#93a99c",
+      "toolbar_field_highlight_text": "#1c2225",
+      "button_background_hover": "#3a464b",
+      "button_background_active": "#46545a",
+      "icons": "#d3dad5",
+      "icons_attention": "#93a99c",
+      "popup": "#1c2225",
+      "popup_text": "#d3dad5",
+      "popup_border": "#3a464b",
+      "popup_highlight": "#93a99c",
+      "popup_highlight_text": "#1c2225",
+      "sidebar": "#1c2225",
+      "sidebar_text": "#d3dad5",
+      "sidebar_border": "#2e383c",
+      "sidebar_highlight": "#93a99c",
+      "sidebar_highlight_text": "#1c2225",
+      "ntp_background": "#1c2225",
+      "ntp_text": "#d3dad5"
+    },
+    "properties": {
+      "color_scheme": "dark",
+      "content_color_scheme": "auto"
+    }
+  }
+}
