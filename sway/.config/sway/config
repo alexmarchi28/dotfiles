@@ -7,32 +7,47 @@ set $down j
 set $up k
 set $right l
 
+# Colors (misty forest, matches trees.webp and waybar/style.css)
+set $bg     1c2225
+set $fg     d3dad5
+set $accent 93a99c
+set $dim    2e383c
+set $muted  7f8b85
+
 # Default Terminal
 set $term kitty
-# Default Application Launcher
-set $menu wmenu-run -S cdd6f4 -N 1a1b26 -s 1a1b26 -n cdd6f4
+# Default Application Launcher (apps with icons; colors in ~/.config/fuzzel/fuzzel.ini)
+set $menu fuzzel
+# Fallback: plain command launcher
+# set $menu wmenu-run -N $bg -n $fg -S $accent -s $bg
+
+# Monitor brightness/contrast via DDC/CI (absolute path: ~/.local/bin may not be in sway's PATH)
+set $monictrl ~/.local/bin/monictrl
 
 # Starts Notification Daemon
 exec mako
-# Starts brightness and volume indicator
-exec wob
 
 # to use GUI applications with sudo privileges
-exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
+exec lxpolkit
+
+# Regenerates the sage GTK theme (Adwaita-sage) only after a GTK update
+exec ~/.local/bin/gtk-sage-theme --if-changed
 
 # Disables borders
 default_border pixel 2
-client.focused #009999 #009999 #ddffff #009999
+# class                 border   background text    indicator child_border
+client.focused          #$accent #$accent   #$bg    #$fg      #$accent
+client.focused_inactive #$dim    #$dim      #$fg    #$dim     #$dim
+client.unfocused        #$dim    #$bg       #$muted #$dim     #$dim
 gaps inner 10
 gaps outer 10
 
 
 # Wallpaper
-output * bg /home/alex/.config/sway/omarchy-tokyo-night-default.png fill
+output * bg /home/alex/.config/sway/trees.webp fill
 
 output HDMI-A-1 mode 1920x1080@120Hz
 
-bindsym $mod+Shift+m output "eDP-1" power toggle
 bindsym $mod+Control+m output "HDMI-A-1" power toggle
 bindsym $mod+Shift+p exec "systemctl suspend"
 
@@ -41,15 +56,6 @@ input type:keyboard {
     xkb_layout "it(us)"
     # Additional Control key instead of CapsLock
     # xkb_options ctrl:nocaps
-}
-
-input type:touchpad {
-  drag_lock disabled
-  dwt enabled
-  tap enabled
-  natural_scroll enabled
-  middle_emulation enabled
-  scroll_factor 0.5
 }
 
 bindsym $mod+Return exec $term
@@ -85,8 +91,6 @@ bindsym $mod+Shift+$up move up
 bindsym $mod+Shift+$right move right
 
 # Workspaces:
-bindgesture swipe:right workspace prev
-bindgesture swipe:left workspace next
 # Switch to workspace
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
@@ -151,10 +155,17 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
+# Small panels (opened from waybar) float centered instead of tiling
+for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, resize set 800 500, move position center
+for_window [app_id="blueman-manager"] floating enable, resize set 700 450, move position center
+for_window [app_id="nmtui"] floating enable, resize set 800 550, move position center
+
 
 # Sets Wob (brightness and volume indicator)
 set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
-exec rm -f $WOBSOCK && mkfifo $WOBSOCK && tail -f $WOBSOCK | wob
+# wob reads the FIFO directly (opened read-write, so it never hits EOF):
+# "tail -f" on a FIFO only polls once per second, which made wob lag behind
+exec rm -f $WOBSOCK && mkfifo $WOBSOCK && wob <> $WOBSOCK
 
 # Pipewire Volume Control
 # using laptop dedicated keys
@@ -166,23 +177,38 @@ bindsym --locked $mod+Shift+Left exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 
 # mute
 bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && (wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo 0 > $WOBSOCK) || wpctl get-volume @DEFAULT_AUDIO_SINK@ | sed 's/[^0-9]//g' > $WOBSOCK
 
-# Brightness Control
-# using laptop dedicated keys
-bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+ | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
-bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
+# Media player control (any MPRIS player: Firefox, Spotify, mpv...)
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioPause exec playerctl play-pause
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioStop exec playerctl stop
+
+# Brightness Control (external monitor via DDC/CI, no backlight device on this PC)
+# using keyboard dedicated keys, if present
+bindsym --locked XF86MonBrightnessUp exec $monictrl 10 +5 > $WOBSOCK
+bindsym --locked XF86MonBrightnessDown exec $monictrl 10 -5 > $WOBSOCK
+
+# using Ctrl + keyboard volume knob
+bindsym --locked Control+XF86AudioRaiseVolume exec $monictrl 10 +5 > $WOBSOCK
+bindsym --locked Control+XF86AudioLowerVolume exec $monictrl 10 -5 > $WOBSOCK
 
 # change contrast external monitor
-bindsym --locked $mod+Control+u exec monictrl 12 +10 && monictrl 12 > $WOBSOCK 
-bindsym --locked $mod+Control+d exec monictrl 12 -10 && monictrl 12 > $WOBSOCK
+bindsym --locked $mod+Control+u exec $monictrl 12 +10 > $WOBSOCK
+bindsym --locked $mod+Control+d exec $monictrl 12 -10 > $WOBSOCK
 
 # change brightness external monitor
-bindsym --locked $mod+Shift+u exec monictrl 10 +10 && monictrl 10 > $WOBSOCK
-bindsym --locked $mod+Shift+d exec monictrl 10 -10 && monictrl 10 > $WOBSOCK
+bindsym --locked $mod+Shift+u exec $monictrl 10 +10 > $WOBSOCK
+bindsym --locked $mod+Shift+d exec $monictrl 10 -10 > $WOBSOCK
 
 # Take Screenshots, goes directly into Images folder
 bindsym Print exec grim
+# Screenshot of a selected area, copied to clipboard
+bindsym Shift+Print exec grim -g "$(slurp)" - | wl-copy
 
-bar swaybar_command waybar
+bar {
+    swaybar_command waybar
+}
 
 # Status Bar:
 #bar {
