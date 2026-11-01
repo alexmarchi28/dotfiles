@@ -10,7 +10,6 @@ restore_original() {
 }
 
 rm -f /etc/default/grub.d/misty-forest.cfg /boot/grub/misty-forest-background.png
-sed -i 's/^quiet_boot="1"$/quiet_boot="0"/' /etc/grub.d/10_linux
 update-grub
 
 restore_original /etc/default/console-setup
