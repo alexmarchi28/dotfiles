@@ -1,0 +1,10 @@
+# greetd with the tuigreet text login (installed as /etc/greetd/config.toml).
+# Colours are the console ones set by the vt.default_* kernel parameters (grub-misty-forest.cfg).
+
+[terminal]
+# same console as the boot messages
+vt = 1
+
+[default_session]
+command = "tuigreet --time --time-format '%A %d %B  %H:%M' --remember --remember-user-session --asterisks --cmd sway --greeting 'Debian · sway' --theme 'container=black;border=green;title=green;greet=white;text=white;prompt=green;input=white;time=darkgray;action=darkgray;button=green'"
+user = "_greetd"
