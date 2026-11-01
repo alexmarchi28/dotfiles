@@ -9,7 +9,7 @@ restore_original() {
   [ -e "$1.misty-forest-orig" ] && mv -f "$1.misty-forest-orig" "$1" || true
 }
 
-rm -f /etc/default/grub.d/misty-forest.cfg
+rm -f /etc/default/grub.d/misty-forest.cfg /boot/grub/misty-forest-background.png
 update-grub
 
 restore_original /etc/default/console-setup

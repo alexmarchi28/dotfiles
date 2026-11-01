@@ -76,7 +76,7 @@ Each folder is a Stow package that mirrors the paths starting from `~`:
 
 | Path | Contents |
 |---|---|
-| `system/boot/grub-misty-forest.cfg` | kernel parameters: no splash, systemd messages, console palette |
+| `system/boot/grub-misty-forest.cfg` | kernel parameters: no splash, systemd messages, console palette, plain GRUB background (`grub-background.png`) |
 | `system/boot/greetd-config.toml` | greetd with the tuigreet text login |
 | `system/boot/greetd-tty1.conf` | greetd on tty1, after the boot messages |
 | `system/boot/install.sh` / `uninstall.sh` | install the text boot / go back to plymouth and GDM |
@@ -131,7 +131,7 @@ To add a package: create `name/.config/name/...`, move the file there and run
   with its history.
 - **Text boot** (optional, not run by `setup.sh`): `sudo ~/dotfiles/system/boot/install.sh`, then
   reboot. GRUB stays hidden; the boot shows the systemd `[  OK  ]` lines in the system palette (the
-  16 console colours are set with the `vt.default_*` kernel parameters) with the Terminus 16x32
+  16 console colours are set with the `vt.default_*` kernel parameters) with the Terminus 12x24
   font, then the tuigreet login replaces GDM (sway by default, GNOME still selectable with `F3`).
   The keyring is unlocked at login as with GDM. `sudo ~/dotfiles/system/boot/uninstall.sh` goes back
   to the Debian boot; if the login does not start, use it from `Ctrl+Alt+F2`.

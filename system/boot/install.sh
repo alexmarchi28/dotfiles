@@ -17,11 +17,13 @@ systemd-tmpfiles --create tuigreet.conf
 
 echo "==> GRUB: parametri del kernel (niente splash, palette della console)"
 install -D -m 644 grub-misty-forest.cfg /etc/default/grub.d/misty-forest.cfg
+install -m 644 grub-background.png /boot/grub/misty-forest-background.png
 update-grub
 
-echo "==> Font della console: Terminus 16x32"
+echo "==> Font della console: Terminus 12x24"
 keep_original /etc/default/console-setup
-sed -i -e 's/^FONTFACE=.*/FONTFACE="Terminus"/' -e 's/^FONTSIZE=.*/FONTSIZE="16x32"/' /etc/default/console-setup
+sed -i -e 's/^FONTFACE=.*/FONTFACE="Terminus"/' -e 's/^FONTSIZE=.*/FONTSIZE="12x24"/' /etc/default/console-setup
+setupcon --save-only
 
 echo "==> greetd con tuigreet su tty1"
 keep_original /etc/greetd/config.toml
