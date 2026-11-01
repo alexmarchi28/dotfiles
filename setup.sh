@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")"
 
-PACKAGES=(sway waybar kitty mako wob fuzzel gtk scripts)
+PACKAGES=(sway waybar kitty mako wob fuzzel gtk scripts nvim)
 
 echo "==> Pacchetti"
 mapfile -t pkgs < <(grep -vE '^\s*(#|$)' packages.txt)
@@ -22,6 +22,18 @@ else
   rm -r "$tmp"
   fc-cache -f
 fi
+
+echo "==> Neovim (ultima versione stabile in /opt)"
+# Debian ha una versione troppo vecchia per LazyVim: si usa il tarball ufficiale
+if [ -x /opt/nvim-linux-x86_64/bin/nvim ]; then
+  echo "già installato: $(/opt/nvim-linux-x86_64/bin/nvim --version | head -1) (per aggiornarlo cancella /opt/nvim-linux-x86_64)"
+else
+  tmp=$(mktemp -d)
+  curl -fL -o "$tmp/nvim.tar.gz" https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+  sudo tar -C /opt -xzf "$tmp/nvim.tar.gz"
+  rm -r "$tmp"
+fi
+sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
 
 echo "==> Link (stow)"
 # i file già presenti (non link) vengono spostati in un backup invece di bloccare stow

@@ -9,7 +9,8 @@ make the interface less intrusive and more focused on editing.
 
 ## Changes From LazyVim
 
-- Uses Neovim's built-in `default` colorscheme.
+- Uses [Everforest](https://github.com/neanias/everforest-nvim) recoloured with the system
+  palette (grey-green background, sage accent), the same colours as kitty, sway and Waybar.
 - Applies a transparent background to the main editor and plugin UI elements.
 - Reduces the visual intensity of indentation guides.
 - Disables the statusline, including `lualine`.

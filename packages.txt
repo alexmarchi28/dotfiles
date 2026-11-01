@@ -44,6 +44,17 @@ webp-pixbuf-loader
 libglib2.0-bin
 python3-pil
 
+# Neovim (LazyVim): nvim stesso lo scarica setup.sh, Debian ha una versione troppo vecchia
+git
+ripgrep
+fd-find
+build-essential
+# strumenti installati da Mason: black (python3-venv), basedpyright (npm), gopls (go)
+python3-venv
+nodejs
+npm
+golang-go
+
 # gestione dei dotfiles e download del font
 stow
 curl

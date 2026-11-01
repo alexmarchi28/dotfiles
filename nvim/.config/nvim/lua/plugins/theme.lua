@@ -1,3 +1,34 @@
+-- Everforest recoloured with the system palette (same colours as kitty, sway and waybar).
+local palette = {
+  bg_dim = "#171c1f",
+  bg0 = "#1c2225",
+  bg1 = "#252d30",
+  bg2 = "#2e383c",
+  bg3 = "#3a464b",
+  bg4 = "#46545a",
+  bg5 = "#52615f",
+  bg_visual = "#3b4a42",
+  bg_red = "#3a2f2e",
+  bg_green = "#2f3a32",
+  bg_blue = "#2c3840",
+  bg_yellow = "#3a382c",
+  bg_purple = "#352f38",
+  fg = "#d3dad5",
+  red = "#c07a6e",
+  orange = "#c9977a",
+  yellow = "#c9b37c",
+  green = "#9bb08a",
+  aqua = "#83aca8",
+  blue = "#7f9cad",
+  purple = "#a88fa8",
+  grey0 = "#6c7a7e",
+  grey1 = "#7f8b85",
+  grey2 = "#9aa59f",
+  statusline1 = "#93a99c",
+  statusline2 = "#d3dad5",
+  statusline3 = "#c07a6e",
+}
+
 local function clear_background()
   local groups = {
     "Normal",
@@ -43,21 +74,28 @@ local function clear_background()
   end
 end
 
-local function dim_indent_guides()
-  local colors
-
-  if vim.o.background == "light" then
-    colors = { indent = "#d9d9d9", scope = "#b8b8b8" }
-  else
-    colors = { indent = "#242424", scope = "#363636" }
-  end
-
-  vim.api.nvim_set_hl(0, "SnacksIndent", { fg = colors.indent, ctermfg = 238 })
-  vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = colors.scope, ctermfg = 240 })
-  vim.api.nvim_set_hl(0, "SnacksIndentChunk", { fg = colors.scope, ctermfg = 240 })
-end
-
 return {
+  {
+    "neanias/everforest-nvim",
+    lazy = false,
+    priority = 1000,
+    main = "everforest",
+    opts = {
+      background = "hard",
+      transparent_background_level = 1,
+      colours_override = function(p)
+        for name, colour in pairs(palette) do
+          p[name] = colour
+        end
+      end,
+      on_highlights = function(hl, p)
+        -- indentation guides barely visible, the current scope a bit more
+        hl.SnacksIndent = { fg = p.bg2 }
+        hl.SnacksIndentScope = { fg = p.bg4 }
+        hl.SnacksIndentChunk = { fg = p.bg4 }
+      end,
+    },
+  },
   {
     "LazyVim/LazyVim",
     init = function()
@@ -65,14 +103,11 @@ return {
 
       vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
         group = group,
-        callback = function()
-          clear_background()
-          dim_indent_guides()
-        end,
+        callback = clear_background,
       })
     end,
     opts = {
-      colorscheme = "default",
+      colorscheme = "everforest",
     },
   },
 }
