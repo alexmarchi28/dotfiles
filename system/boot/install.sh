@@ -18,6 +18,10 @@ systemd-tmpfiles --create tuigreet.conf
 echo "==> GRUB: parametri del kernel (niente splash, palette della console)"
 install -D -m 644 grub-misty-forest.cfg /etc/default/grub.d/misty-forest.cfg
 install -m 644 grub-background.png /boot/grub/misty-forest-background.png
+# no "Loading Linux ..." / "Loading initial ramdisk ..." lines, white on black over the background:
+# Debian hardcodes quiet_boot="0" in this script (a conffile: an upgrade that changes it asks first).
+# No copy of the original here: update-grub would run it as a second script; uninstall.sh sets 0 back.
+sed -i 's/^quiet_boot="0"$/quiet_boot="1"/' /etc/grub.d/10_linux
 update-grub
 
 echo "==> Font della console: Terminus 12x24"
