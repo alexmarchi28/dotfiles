@@ -16,7 +16,7 @@ Everforest theme.
 | | |
 |---|---|
 | ![Neovim](screenshots/nvim.jpg) | ![Firefox with the Misty Forest theme](screenshots/firefox.jpg) |
-| Neovim (LazyVim) with the recoloured Everforest theme | Firefox with the Misty Forest theme |
+| Neovim (LazyVim): recoloured Everforest theme and minimal statusline | Firefox with the Misty Forest theme |
 
 ## Components
 
@@ -90,10 +90,14 @@ To add a package: create `name/.config/name/...`, move the file there and run
 | `$mod+1…0` | switch workspace |
 | `$mod+r` | resize mode |
 | Volume knob | volume |
+| Mute key | mute |
 | `Ctrl` + volume knob | monitor brightness |
 | `$mod+Shift+u/d` | monitor brightness |
 | `$mod+Ctrl+u/d` | monitor contrast |
-| `Print` / `Shift+Print` | full screenshot / area screenshot to clipboard |
+| `$mod+Ctrl+m` | turn the monitor off / on |
+| Media keys | play/pause, next, previous (`playerctl`) |
+| `Print` | full screenshot, saved to `~/Pictures` (the XDG pictures folder) |
+| `Shift+Print` | area screenshot, copied to the clipboard |
 | `$mod+Shift+p` | suspend |
 | `$mod+Shift+e` | log out |
 
@@ -110,9 +114,11 @@ To add a package: create `name/.config/name/...`, move the file there and run
 - **Firefox theme**: to change it, edit `firefox/misty-forest/manifest.json`, bump `version` and
   upload the folder as a zip to [addons.mozilla.org](https://addons.mozilla.org/developers/) as an
   unlisted add-on to get a new signed `.xpi`. With Firefox Sync the active theme is synced too.
-- **Neovim**: plugins and the Mason tools (LSP servers, formatters, `tree-sitter`) are installed on the
-  first start of `nvim`. The config was imported from
-  [alexmarchi28/nvim](https://github.com/alexmarchi28/nvim) with its history.
+- **Neovim**: plugins and the Mason tools (LSP servers, formatters, debuggers, `tree-sitter`) are
+  installed on the first start of `nvim`; `lazy-lock.json` pins the plugin versions, so commit it
+  after `:Lazy update`. The Go debugger (`delve`) comes from apt. `<leader>sk` searches all the
+  shortcuts. The config was imported from [alexmarchi28/nvim](https://github.com/alexmarchi28/nvim)
+  with its history.
 - **Settings outside of files**: dark style, GTK theme and icon theme are `gsettings` values, applied
   by `setup.sh`.
 
